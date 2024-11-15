@@ -5,11 +5,11 @@ const AppDataSource = new DataSource({
 
   host: 'dpg-csrdkqbtq21c73d1pf20-a',
 
-  username: 'postgres',
+  username: 'testdb_gqw3_user',
 
-  password: 'postgres',
+  password: '9ODbipFm5Qf6MAoSo73c3vEs3b6S2V7H',
 
-  database: 'testdb',
+  database: 'testdb_gqw3',
 
   entities: ['src/entities/*.ts'], //  エンティティファイル（後述）配列
 
