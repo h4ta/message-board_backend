@@ -11,6 +11,6 @@ async function bootstrap() {
   });
 
   console.log(`listening on port ${port}`);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
