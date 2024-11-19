@@ -68,6 +68,7 @@ export class PostService {
       .leftJoinAndSelect('user', 'user', 'user.id=micro_post.user_id')
       .select([
         'micro_post.id as id',
+        'user.id as user_id',
         'user.name as user_name',
         'micro_post.content as content',
         'micro_post.created_at as created_at',
@@ -78,6 +79,7 @@ export class PostService {
 
     type ResultType = {
       id: number;
+      user_id: number;
       content: string;
       user_name: string;
       created_at: Date;
