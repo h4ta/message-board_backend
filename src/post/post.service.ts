@@ -13,6 +13,21 @@ export class PostService {
     private authRepository: Repository<Auth>,
   ) {}
 
+  async checkAuth(token: string): Promise<boolean> {
+    const now = new Date();
+    const auth = await this.authRepository.findOne({
+      where: {
+        token: Equal(token),
+        expire_at: MoreThan(now),
+      },
+    });
+    if (!auth) {
+      return false;
+    }
+
+    return true;
+  }
+
   async createPost(message: string, token: string) {
     const now = new Date();
     const auth = await this.authRepository.findOne({
@@ -33,14 +48,18 @@ export class PostService {
   }
 
   async getList(token: string, start: number = 0, nr_records: number = 1) {
-    const now = new Date();
-    const auth = await this.authRepository.findOne({
-      where: {
-        token: Equal(token),
-        expire_at: MoreThan(now),
-      },
-    });
-    if (!auth) {
+    // const now = new Date();
+    // const auth = await this.authRepository.findOne({
+    //   where: {
+    //     token: Equal(token),
+    //     expire_at: MoreThan(now),
+    //   },
+    // });
+    // if (!auth) {
+    //   throw new ForbiddenException();
+    // }
+
+    if (!this.checkAuth(token)) {
       throw new ForbiddenException();
     }
 
@@ -67,5 +86,17 @@ export class PostService {
     console.log(records);
 
     return records;
+  }
+
+  async deletePost(token: string, id: number) {
+    if (!this.checkAuth(token)) {
+      throw new ForbiddenException();
+    }
+
+    const qb = await this.microPostsRepository
+      .createQueryBuilder('micro_post')
+      .delete()
+      .where('micro_post.id = :id', { id: id })
+      .execute();
   }
 }
