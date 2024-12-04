@@ -95,7 +95,7 @@ export class UserService {
 
         <div>以下のリンクをクリックして、本登録を完了してください。</div>
         <div>30分を過ぎるとリンクが無効となるため注意してください。</div>
-        <a href='http://localhost:3001/registercomplete/?id=${uuid}'>http://localhost:3001/registercomplete/?id=${uuid}</a> `,
+        <a href='https://message-board-frontend-kki4.onrender.com/registercomplete/?id=${uuid}'>https://message-board-frontend-kki4.onrender.com/registercomplete/?id=${uuid}</a> `,
       });
     } catch (error) {
       console.log(error.message);
@@ -182,7 +182,7 @@ export class UserService {
 
         <div>以下のリンクからパスワード再設定を行ってください。</div>
         <div>30分を過ぎるとリンクが無効となるため注意してください。</div>
-        <a href='http://localhost:3001/reset/password/?id=${uuid}'>http://localhost:3001/reset/password/?id=${uuid}</a> `,
+        <a href='https://message-board-frontend-kki4.onrender.com/reset/password/?id=${uuid}'>https://message-board-frontend-kki4.onrender.com/reset/password/?id=${uuid}</a> `,
       });
     } catch (error) {
       console.log('メール送れませんでした');
