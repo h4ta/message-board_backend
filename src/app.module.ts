@@ -10,10 +10,10 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'dpg-csrebbt6l47c73fd8sqg-a',
-      username: 'testdb_dgiu_user',
-      password: 'lMfYGpW8a0VHRKMHwssPKxcdTls4MgeW',
-      database: 'testdb_dgiu',
+      host: 'localhost',
+      username: 'postgres',
+      password: 'postgres',
+      database: 'testdb',
       autoLoadEntities: true,
       synchronize: false,
     }),

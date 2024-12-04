@@ -20,15 +20,22 @@ export class AuthService {
     if (!password) {
       throw new UnauthorizedException();
     }
-    const hash = crypto.createHash('md5').update(password).digest('hex');
+
+    // ユーザーのソルトを取得
     const user = await this.userRepository.findOne({
       where: {
         name: Equal(name),
-        hash: Equal(hash),
       },
     });
+    const storedSalt = user.hash.split('.')[1];
+    const storedHash = user.hash.split('.')[0];
 
-    if (!user) {
+    const hash = crypto
+      .createHash('md5')
+      .update(password + storedSalt)
+      .digest('hex');
+
+    if (storedHash !== hash) {
       throw new UnauthorizedException();
     }
 
