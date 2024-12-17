@@ -5,15 +5,17 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'dpg-csrebbt6l47c73fd8sqg-a',
-      username: 'testdb_dgiu_user',
-      password: 'lMfYGpW8a0VHRKMHwssPKxcdTls4MgeW',
-      database: 'testdb_dgiu',
+      host: process.env.DB_HOST,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: false,
     }),

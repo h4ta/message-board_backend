@@ -3,13 +3,13 @@ import { DataSource } from 'typeorm';
 const AppDataSource = new DataSource({
   type: 'postgres', // データベースの種別。今回はpostgresqlへの接続とします。
 
-  host: 'dpg-csrebbt6l47c73fd8sqg-a',
+  host: process.env.DB_HOST,
 
-  username: 'testdb_dgiu_user',
+  username: process.env.DB_USER,
 
-  password: 'lMfYGpW8a0VHRKMHwssPKxcdTls4MgeW',
+  password: process.env.DB_PASS,
 
-  database: 'testdb_dgiu',
+  database: process.env.DB_NAME,
 
   entities: ['src/entities/*.ts'], //  エンティティファイル（後述）配列
 
