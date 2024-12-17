@@ -6,10 +6,11 @@ import { User } from 'src/entities/user.entity';
 import { Auth } from 'src/entities/auth';
 import { TemporaryUser } from 'src/entities/temporaryUser.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { UserProfile } from 'src/entities/userProfile';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Auth, TemporaryUser]),
+    TypeOrmModule.forFeature([User, Auth, TemporaryUser, UserProfile]),
     ScheduleModule.forRoot(),
   ],
   controllers: [UserController],

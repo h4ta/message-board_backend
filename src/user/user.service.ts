@@ -13,6 +13,7 @@ import { Equal, LessThan, MoreThan, Repository } from 'typeorm';
 import { createTransport } from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid';
 import { Cron } from '@nestjs/schedule';
+import { UserProfile } from 'src/entities/userProfile';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,8 @@ export class UserService {
     private authRepository: Repository<Auth>,
     @InjectRepository(TemporaryUser)
     private tempUserRepository: Repository<TemporaryUser>,
+    @InjectRepository(UserProfile)
+    private userProfileRepository: Repository<UserProfile>,
   ) {}
 
   // メール送信元アドレス、サーバーはmailslurpを利用
@@ -95,7 +98,7 @@ export class UserService {
 
         <div>以下のリンクをクリックして、本登録を完了してください。</div>
         <div>30分を過ぎるとリンクが無効となるため注意してください。</div>
-        <a href='https://message-board-frontend-kki4.onrender.com/registercomplete/?id=${uuid}'>https://message-board-frontend-kki4.onrender.com/registercomplete/?id=${uuid}</a> `,
+        <a href='http://localhost:3001/registercomplete/?id=${uuid}'>http://localhost:3001/registercomplete/?id=${uuid}</a> `,
       });
     } catch (error) {
       console.log(error.message);
@@ -148,6 +151,12 @@ export class UserService {
     };
     this.userRepository.save(record);
 
+    // プロフィールも登録
+    const profileRecord = {
+      name: registerUser.name,
+    };
+    this.userProfileRepository.save(record);
+
     //仮登録DBからは削除
     const qb = await this.tempUserRepository
       .createQueryBuilder('temporary_user')
@@ -182,7 +191,7 @@ export class UserService {
 
         <div>以下のリンクからパスワード再設定を行ってください。</div>
         <div>30分を過ぎるとリンクが無効となるため注意してください。</div>
-        <a href='https://message-board-frontend-kki4.onrender.com/reset/password/?id=${uuid}'>https://message-board-frontend-kki4.onrender.com/reset/password/?id=${uuid}</a> `,
+        <a href='http://localhost:3001/reset/password/?id=${uuid}'>http://localhost:3001/reset/password/?id=${uuid}</a> `,
       });
     } catch (error) {
       console.log('メール送れませんでした');
@@ -246,5 +255,30 @@ export class UserService {
       .execute();
 
     console.log(`仮登録DBの定期削除を行いました。${deleteDate}`);
+  }
+
+  async changeProfPic(name: string, fileURL: string) {
+    const qb = await this.userProfileRepository
+      .createQueryBuilder('userProfile')
+      .update()
+      .set({ profile_pic_url: fileURL })
+      .where({ name: name })
+      .execute();
+
+    console.log(`${name}のユーザー画像を${fileURL}に変更`);
+  }
+
+  // プロフィール情報は公開されている情報のため、認可を必要としない
+  async getUserProfile(name: string) {
+    const userProf = await this.userProfileRepository.findOne({
+      where: {
+        name: Equal(name),
+      },
+    });
+    if (!userProf) {
+      return null;
+    }
+
+    return userProf;
   }
 }

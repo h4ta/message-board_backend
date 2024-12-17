@@ -25,6 +25,11 @@ export class UserController {
     return await this.userService.checkExistTempUser(id);
   }
 
+  @Get('profile')
+  async getUserProfile(@Query('name') name: string) {
+    return await this.userService.getUserProfile(name);
+  }
+
   @Get(':id')
   async getUser(@Param('id') id: number, @Query('token') token: string) {
     return await this.userService.getUser(token, id);
@@ -38,5 +43,13 @@ export class UserController {
   @Post('reset/password/')
   async passReset(@Query('id') id: string, @Body('password') password: string) {
     return await this.userService.passReset(id, password);
+  }
+
+  @Post('edit/picture')
+  async changeProfPic(
+    @Query('name') name: string,
+    @Body('fileURL') fileURL: string,
+  ) {
+    return await this.userService.changeProfPic(name, fileURL);
   }
 }
