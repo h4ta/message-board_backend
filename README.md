@@ -83,3 +83,8 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## .envについて
+
+DB情報、gmail認証情報について、.envファイルから指定する必要があります。
+知りたい場合は連絡をください。
