@@ -28,20 +28,17 @@ export class UserService {
     private userProfileRepository: Repository<UserProfile>,
   ) {}
 
-  // メール送信元アドレス、サーバーはmailslurpを利用
+  // メール送信元アドレス、サーバーは本アプリ用に作成した管理者googleアカウントのgmailを利用
   transporter = createTransport({
-    host: 'mxslurp.click',
-    port: 2525,
-    secure: false,
-    requireTLS: false,
-    tls: {
-      rejectUnauthorized: false,
-    },
+    service: 'Gmail',
     auth: {
-      user: 'hVy1WugJjdhjH5czbidxP7wqSyAy4xOf',
-      pass: 'vk13tmfJIUjZEMTeGSPHfc5IAafys0xn',
+      user: process.env.MAIL_ACCOUNT,
+      pass: process.env.MAIL_PASSWORD,
     },
   });
+
+  // トランザクションメールに記載するサイトURLのBaseURL
+  baseUrl = process.env.APP_HOST || 'http://localhost:3001';
 
   async getUser(token: string, id: number) {
     const now = new Date();
@@ -90,7 +87,7 @@ export class UserService {
     // 登録メールアドレスに本登録リンクが記載されたメールを送信
     try {
       await this.transporter.sendMail({
-        from: 'user-ff661516-d01a-4b10-8c8e-6e5cee5fb56a@mailslurp.biz',
+        from: process.env.MAIL_ACCOUNT,
         to: email,
         subject: '本登録のお知らせ',
         html: `
@@ -98,7 +95,7 @@ export class UserService {
 
         <div>以下のリンクをクリックして、本登録を完了してください。</div>
         <div>30分を過ぎるとリンクが無効となるため注意してください。</div>
-        <a href='http://localhost:3001/registercomplete/?id=${uuid}'>http://localhost:3001/registercomplete/?id=${uuid}</a> `,
+        <a href='${this.baseUrl}/registercomplete/?id=${uuid}'>${this.baseUrl}/registercomplete/?id=${uuid}</a> `,
       });
     } catch (error) {
       console.log(error.message);
@@ -183,7 +180,7 @@ export class UserService {
     // 登録メールアドレスに再設定リンクが記載されたメールを送信
     try {
       await this.transporter.sendMail({
-        from: 'user-ff661516-d01a-4b10-8c8e-6e5cee5fb56a@mailslurp.biz',
+        from: process.env.MAIL_ACCOUNT,
         to: email,
         subject: 'パスワード再設定の案内',
         html: `
@@ -191,7 +188,7 @@ export class UserService {
 
         <div>以下のリンクからパスワード再設定を行ってください。</div>
         <div>30分を過ぎるとリンクが無効となるため注意してください。</div>
-        <a href='http://localhost:3001/reset/password/?id=${uuid}'>http://localhost:3001/reset/password/?id=${uuid}</a> `,
+        <a href='${this.baseUrl}/reset/password/?id=${uuid}'>${this.baseUrl}/reset/password/?id=${uuid}</a> `,
       });
     } catch (error) {
       console.log('メール送れませんでした');
