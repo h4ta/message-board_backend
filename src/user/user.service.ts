@@ -14,6 +14,7 @@ import { createTransport } from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid';
 import { Cron } from '@nestjs/schedule';
 import { UserProfile } from 'src/entities/userProfile';
+import axios, { AxiosResponse } from 'axios';
 
 @Injectable()
 export class UserService {
@@ -69,6 +70,7 @@ export class UserService {
     name: string,
     email: string,
     password: string,
+    recaptcha_token: string,
   ): Promise<Array<ErrorMessages>> {
     const errorMessages: Array<ErrorMessages> = [];
 
@@ -79,6 +81,16 @@ export class UserService {
     if (await this.userRepository.findOneBy({ email })) {
       errorMessages.push('email_duplicated');
     }
+
+    // googleサーバーrecaptchaの結果を判定してもらう
+    const recaptchaResponse: AxiosResponse<any> = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptcha_token}`,
+      {},
+    );
+    if (recaptchaResponse.data.success === false) {
+      errorMessages.push('reCAPTCHA failed');
+    }
+
     if (errorMessages.length !== 0) {
       return errorMessages;
     }

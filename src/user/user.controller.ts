@@ -11,8 +11,14 @@ export class UserController {
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('password') password: string,
+    @Body('recaptcha_token') recaptcha_token: string,
   ): Promise<Array<ErrorMessages>> {
-    return await this.userService.createTemporaryUser(name, email, password);
+    return await this.userService.createTemporaryUser(
+      name,
+      email,
+      password,
+      recaptcha_token,
+    );
   }
 
   @Get('')
